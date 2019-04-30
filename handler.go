@@ -61,3 +61,17 @@ func TodoCreate(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		panic(err)
 	}
 }
+
+func TodoDelete(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	id, _ := strconv.Atoi(ps.ByName("todoId"))
+	if err := RepoDestroyTodo(id); err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		if err := json.NewEncoder(w).Encode(err); err != nil {
+			panic(err)
+		}
+		return
+	}
+	w.Header().Del("Content-Type")
+	w.WriteHeader(204)
+
+}
